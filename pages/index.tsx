@@ -5,11 +5,16 @@ import Link from 'next/link';
 import { Router } from 'next/router';
 import { useEffect, useState } from 'react';
 import styles from '../styles/Home.module.css'
+import { Button } from 'antd';
 
 const Home: NextPage = () => {
   return <>
     <nav>
-      <Link href={"/gpus"}>GPUs</Link>
+      <Button>
+        <Link href={"/gpus"}>
+          View all GPUs
+        </Link>
+      </Button>
     </nav>
   </>
 }

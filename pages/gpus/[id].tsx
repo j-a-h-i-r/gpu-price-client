@@ -67,6 +67,17 @@ const GpuDetailPage: NextPage = () => {
   const [chartData, setChartData] = useState(emptyChartData);
   const [startTime, setStartTime] = useState<Dayjs|null>(null);
 
+  const dedupedPrices = prices.filter((e, i, a) => e.price != a[i-1]?.price);
+
+  const columns = [
+    {
+        title: "Timestamp",
+        dataIndex: "updatedAt",
+        key: "id",
+    },
+    { title: "Price", dataIndex: "price", key: "id" },
+]
+
   useEffect(() => {
     if (!id) return;
     fetchGpuDetail(id)
@@ -90,7 +101,7 @@ const GpuDetailPage: NextPage = () => {
         setChartData(prepareChartData(prices));
       }
     );
-  }, [startTime]);
+  }, [id, startTime]);
 
   const onTimeframeChange = (timeframeCode: string) => {
     const timeframeCodeToTimestampMap: any = {
@@ -111,6 +122,7 @@ const GpuDetailPage: NextPage = () => {
   return <div>
     <GpuDetail
       gpu={gpu} prices={prices} chartOptions={options} chartData={chartData}
+      dedupedPrices={dedupedPrices} columns={columns}
       onTimeframeChange={onTimeframeChange}
     />
   </div>

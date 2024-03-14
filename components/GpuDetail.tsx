@@ -1,9 +1,15 @@
+import { Table } from 'antd';
 import 'chart.js/auto';
+import Link from 'next/link';
 import { Chart } from "react-chartjs-2";
 
 export function GpuDetail(props: any) {
-    const {gpu, prices, chartData, chartOptions, onTimeframeChange} = props;
-    return <div>
+    const {
+        gpu, prices, chartData, chartOptions, onTimeframeChange,
+        dedupedPrices, columns
+    } = props;
+    return <div className='container mx-auto'>
+        <Link href="/gpus" className='bg-blue-100 p-4'> Back </Link>
         <h2>{gpu?.name}</h2>
         <p> Availability: {prices?.isAvailable? 'Available': 'Not Available'} </p>
         <p> Website: {gpu.website} </p>
@@ -21,24 +27,7 @@ export function GpuDetail(props: any) {
             </div>
         </div>
         
-        <table>
-            <thead>
-                <tr>
-                    <th>Timestamp</th>
-                    <th>Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    prices.slice(0, 10).map((p: any) => {
-                        return <tr key={p.updatedAt}>
-                            <td>{p.updatedAt}</td>
-                            <td>{p.price}</td>
-                        </tr>
-                    })
-                }
-            </tbody>
-        </table>
+        <Table dataSource={dedupedPrices} columns={columns}/>
 
         <Chart type='line' options={chartOptions} data={chartData}/>
     </div>
