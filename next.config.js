@@ -1,4 +1,11 @@
 /** @type {import('next').NextConfig} */
+
+// const apiUrl = "http://gpu-prices-server.web:5000";
+console.log("API_URL", process.env.API_URL);
+const apiUrl = process.env?.["API_URL"] ?? "http://localhost:3333";
+
+console.log("apiUrl", apiUrl);
+
 module.exports = {
   reactStrictMode: true,
   // transpilePackages: ['antd'],
@@ -12,7 +19,7 @@ module.exports = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:3333/api/:path*',
+        destination: `${apiUrl}/api/:path*`,
       }
     ]
   },
