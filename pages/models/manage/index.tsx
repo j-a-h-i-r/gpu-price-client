@@ -2,7 +2,8 @@ import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { ModelList } from "../../../components/ModelList";
 import { TableRowSelection } from "antd/es/table/interface";
-import { DefaultOptionType, OptionProps } from "antd/es/select";
+import { DefaultOptionType } from "antd/es/select";
+import { useSearchParams } from "next/navigation";
 
 interface Model {
     id: number
@@ -23,8 +24,9 @@ interface GpuModelEntries {
     gpuids: string[]
 }
 
-async function associateGpuWithModel(gpu: GpuModelEntries) {
-    return fetch("/api/models/manage", {
+async function associateGpuWithModel(gpu: GpuModelEntries, token?: string) {
+    let apiUrl = `/api/models/manage?token=${token}`;
+    return fetch(apiUrl, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -41,6 +43,8 @@ const GpuListPage: NextPage = () => {
     const [isModelModalOpen, setIsModelModalOpen] = useState(false);
     const [modelInput, setModelInput] = useState("");
     const [models, setModels] = useState<Model[]>([]);
+
+    const searchParams = useSearchParams();
 
     const columns = [
         {
@@ -111,7 +115,9 @@ const GpuListPage: NextPage = () => {
             reqBody.modelname = modelInput;
         }
 
-        associateGpuWithModel(reqBody)
+        const token = searchParams.get("token");
+        console.log("token", token);
+        associateGpuWithModel(reqBody, token)
         .then((res) => {
             setIsModelModalOpen(false);
         })
