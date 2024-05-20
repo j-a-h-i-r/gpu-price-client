@@ -1,40 +1,14 @@
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
-import { ModelList } from "../../../components/ModelList";
+import { ModelList } from "../../components/ModelList";
 import { TableRowSelection } from "antd/es/table/interface";
 import { DefaultOptionType } from "antd/es/select";
 import { useSearchParams } from "next/navigation";
-
-interface Model {
-    id: number
-    name: string
-}
-
-async function fetchAllGpusWithModels() {
-    return fetch("/api/models/allgpus").then((res) => res.json());
-}
-
-async function fetchAllModels(): Promise<Model[]> {
-    return fetch("/api/models").then((res) => res.json());
-}
-
-interface GpuModelEntries {
-    modelid?: string
-    modelname?: string
-    gpuids: string[]
-}
-
-async function associateGpuWithModel(gpu: GpuModelEntries, token?: string) {
-    let apiUrl = `/api/models/manage?token=${token}`;
-    return fetch(apiUrl, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(gpu),
-    })
-    .then((res) => res.json());
-}
+import { fetchAllGpusWithModels } from "../../libs/api";
+import { Model } from "../../libs/api";
+import { fetchAllModels } from "../../libs/api";
+import { GpuModelEntries } from "../../libs/api";
+import { associateGpuWithModel } from "../../libs/api";
 
 const GpuListPage: NextPage = () => {
     const [gpus, setGpus] = useState<any[]>([]);
@@ -43,6 +17,7 @@ const GpuListPage: NextPage = () => {
     const [isModelModalOpen, setIsModelModalOpen] = useState(false);
     const [modelInput, setModelInput] = useState("");
     const [models, setModels] = useState<Model[]>([]);
+    const [emailInput, setEmailInput] = useState();
 
     const searchParams = useSearchParams();
 

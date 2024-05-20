@@ -4,21 +4,9 @@ import { useEffect, useState } from "react";
 import { GpuDetail } from "../../components/GpuDetail";
 import { ChartData } from "chart.js";
 import dayjs, { Dayjs } from "dayjs";
-
-async function fetchGpuDetail(gpuId: string) {
-  console.log("Fetching detail of gup with ID ", gpuId);
-  return fetch(`/api/gpus/${gpuId}`).then((res) => res.json());
-}
-
-async function fetchGpuPrices(gpuId: string, startTime: Dayjs | null = null) {
-  console.log(`Fetching prices of GPU with id (${gpuId}) and timeframe (${startTime} to now)`);
-  
-  let apiPath = `/api/gpus/${gpuId}/prices`;
-  if (startTime) {
-    apiPath = `${apiPath}?start_date=${startTime.toDate()}`;
-  }
-  return fetch(apiPath).then((res) => res.json());
-}
+import { fetchGpuDetail, sendAuthCodeForGpuSubscription, verifyAuthCodeForGpuSubscription } from "../../libs/api";
+import { fetchGpuPrices } from "../../libs/api";
+import { notification } from "antd";
 
 const options = {
   responsive: true,
@@ -66,6 +54,11 @@ const GpuDetailPage: NextPage = () => {
   const [prices, setPrices] = useState([] as any[]);
   const [chartData, setChartData] = useState(emptyChartData);
   const [startTime, setStartTime] = useState<Dayjs|null>(null);
+  const [emailInput, setEmailInput] = useState<string>("");
+  const [codeInput, setCodeInput] = useState<string>("");
+  const [showAuthCode, setShowAuthCode] = useState<boolean>(false);
+
+  const [api, contextHolder] = notification.useNotification();
 
   const dedupedPrices = prices.filter((e, i, a) => e.price != a[i-1]?.price);
 
@@ -119,11 +112,37 @@ const GpuDetailPage: NextPage = () => {
     setStartTime(startTime);
   }
 
+  const emailSubscriptionClicked = () => {
+    console.log("email", emailInput);
+    sendAuthCodeForGpuSubscription(id, emailInput)
+    .then(() => {
+      setShowAuthCode(true);
+    })
+  }
+
+  const codeSubscriptionClicked = () => {
+    console.log("code", codeInput);
+    verifyAuthCodeForGpuSubscription(id, emailInput, codeInput)
+    .then(() => {
+      console.log("Code verified");
+      api.success({
+        message: "Code verified"
+      })
+    })
+  }
+
   return <div>
     <GpuDetail
       gpu={gpu} prices={prices} chartOptions={options} chartData={chartData}
       dedupedPrices={dedupedPrices} columns={columns}
       onTimeframeChange={onTimeframeChange}
+      onClickEmailSubscription={emailSubscriptionClicked}
+      emailInput={emailInput}
+      setEmailInput={setEmailInput}
+      showAuthCode={showAuthCode}
+      codeInput={codeInput}
+      setCodeInput={setCodeInput}
+      onClickCodeSubscription={codeSubscriptionClicked}
     />
   </div>
 }

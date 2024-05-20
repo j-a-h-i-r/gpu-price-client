@@ -2,10 +2,7 @@ import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { GpuList } from "../../components/GpuList";
 import Link from "next/link";
-
-async function fetchGpus() {
-    return fetch("/api/gpus").then((res) => res.json());
-}
+import { fetchGpus } from "../../libs/api";
 
 const GpuListPage: NextPage = () => {
     const [gpus, setGpus] = useState([]);

@@ -4,21 +4,8 @@ import { useEffect, useState } from "react";
 import { GpuDetail } from "../../../components/GpuDetail";
 import { ChartData } from "chart.js";
 import dayjs, { Dayjs } from "dayjs";
-
-async function fetchGpuDetail(gpuId: string) {
-  console.log("Fetching detail of gup with ID ", gpuId);
-  return fetch(`/api/gpus/${gpuId}`).then((res) => res.json());
-}
-
-async function fetchGpuPrices(gpuId: string, startTime: Dayjs | null = null) {
-  console.log(`Fetching prices of GPU with id (${gpuId}) and timeframe (${startTime} to now)`);
-  
-  let apiPath = `/api/gpus/${gpuId}/prices`;
-  if (startTime) {
-    apiPath = `${apiPath}?start_date=${startTime.toDate()}`;
-  }
-  return fetch(apiPath).then((res) => res.json());
-}
+import { fetchGpuDetail } from "../../../libs/api";
+import { fetchGpuPrices } from "../../../libs/api";
 
 const options = {
   responsive: true,

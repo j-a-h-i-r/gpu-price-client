@@ -1,4 +1,4 @@
-import { AutoComplete, Button, Flex, Input, Modal, Radio, Table } from "antd"
+import { AutoComplete, Button, Flex, Input, Modal, Radio, Switch, Table } from "antd"
 
 export function ModelList(props: any) {
     const {
@@ -18,7 +18,7 @@ export function ModelList(props: any) {
             </p>
             <div>
                 <Button onClick={onClickModelBtn}>
-                    Add Model
+                    Associate Model
                 </Button>
             </div>
 
@@ -50,7 +50,6 @@ export function ModelList(props: any) {
 
         <div>
             <Flex>
-                <Radio></Radio>
                 <Input.Search
                     placeholder="Enter GPU to filter"
                     onSearch={onFilterChange}
